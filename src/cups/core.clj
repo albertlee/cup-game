@@ -64,7 +64,7 @@
 (def found-result (atom false))
 (def max-deep 12)
 
-(defn search "递归搜索，采用广度优先算法"
+(defn search "递归搜索，采用深度优先算法"
   [state target path state-hist]
   (when-not (or @found-result
                 (> (count path) max-deep)
@@ -77,6 +77,7 @@
         (doseq [s (reverse (interleave state-hist path))]
           (println s))
         path)
+
       (doseq [act action-list]
         (let [cmd (cons (first act) (cons state (rest act)))]
           (let [new-state (eval cmd)]
