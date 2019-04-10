@@ -91,7 +91,7 @@
           (let [new-state (eval cmd)]
             (search new-state target (cons act path) (cons new-state state-hist))))))))
 
-(search init-state target [] [init-state])
+;; 搜索 6,5 -> 3 的问题:
 (let [init-state {:a {:c 6 :v 0}
                   :b {:c 5 :v 0}}
       target 3
@@ -101,6 +101,7 @@
   (reset! found-result false)
   (search init-state target init-path init-state-hist))
 
+;; 搜索 6,5 -> 2 的问题:
 (let [init-state {:a {:c 6 :v 0}
                   :b {:c 5 :v 0}}
       target 2
@@ -109,6 +110,10 @@
       ]
   (reset! found-result false)
   (search init-state target init-path init-state-hist))
+
+
+;; 人工得到的一个答案， 比暴力搜索得到的要短
+;; 6,5 -> 3
 #_(-> init-state
       (act-fill :a)
       (act-transfer :a :b)
@@ -123,7 +128,7 @@
       )
 
 "
-;; 实例
+;; 搜索结果实例
 ;; 6,5 -> 3
 
 Action & States:
