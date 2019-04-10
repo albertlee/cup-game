@@ -54,26 +54,26 @@
   (some #(= % target)
         (map :v (vals state))))
 
-(defn check-state-hist "判断是否在走回头路"
+(defn check-state-hist "判断是否在走回头路, 判断状态历史里是否有重复的，增加这个判断可以极大的控制搜索空间，有效剪枝"
   [state-hist]
   (apply distinct?
          (map str (map vec (map (comp #(map :v %) vals)
                                 state-hist)))))
 
+;; 全局状态，用于从递归中跳出，应该有更优雅的方法，懒得写了
 (def found-result (atom false))
+(def max-deep 12)
 
-(defn search
+(defn search "递归搜索，采用广度优先算法"
   [state target path state-hist]
-
   (when-not (or @found-result
-                (> (count path) 12)
+                (> (count path) max-deep)
                 (not (check-state-hist state-hist)) ;; 剪枝，避免走回头路
                 )
     (if (is-target? state target)
       (do
         (reset! found-result true)
         (println "Action & States:")
-
         (doseq [s (reverse (interleave state-hist path))]
           (println s))
         path)
