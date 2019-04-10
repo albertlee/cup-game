@@ -40,6 +40,7 @@
         (assoc cup-from (assoc from-info :v (- (:v from-info) trans)))
         (assoc cup-to (assoc to-info :v (+ (:v to-info) trans))))))
 
+;; 偷懒手工列在这里，其实应该根据给定的 state 里的key来生成这个列表
 (def action-list
   '[(act-fill :a)
     (act-fill :b)
@@ -53,21 +54,11 @@
   (some #(= % target)
         (map :v (vals state))))
 
-#_(apply distinct?
-         (map str (map vec (map (comp #(map :v %) vals)
-                                [{:a {:c 6 :v 0} :b {:c 5 :v 0}}
-                                 {:a {:c 6 :v 6} :b {:c 5 :v 0}}
-                                 {:a {:c 6 :v 0} :b {:c 5 :v 0}}
-                                 ]))))
-
-
 (defn check-state-hist "判断是否在走回头路"
   [state-hist]
   (apply distinct?
          (map str (map vec (map (comp #(map :v %) vals)
                                 state-hist)))))
-
-;; (check-state-hist [init-state init-state])
 
 (def found-result (atom false))
 
