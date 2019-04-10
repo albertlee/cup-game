@@ -17,8 +17,7 @@
 (def target 3)
 
 (defn act-fill "将 cup-no 倒满
-  state: {cup : [容量, 当前值] }
-  "
+  state: {cup : {:c 容量, :v 当前值}}"
   [state cup-no]
   (let [s (get state cup-no)]
     (assoc state cup-no (assoc s :v (:c s)))))
@@ -33,9 +32,7 @@
   (let [to-info (get state cup-to)
         trans-max (- (:c to-info) (:v to-info))
         from-info (get state cup-from)
-        from-v (:v from-info)
-        trans (min trans-max from-v)
-        ]
+        trans (min trans-max (:v from-info))]
     (-> state
         (assoc cup-from (assoc from-info :v (- (:v from-info) trans)))
         (assoc cup-to (assoc to-info :v (+ (:v to-info) trans))))))
@@ -77,11 +74,10 @@
         (doseq [s (reverse (interleave state-hist path))]
           (println s))
         path)
-
       (doseq [act action-list]
-        (let [cmd (cons (first act) (cons state (rest act)))]
-          (let [new-state (eval cmd)]
-            (search new-state target (cons act path) (cons new-state state-hist))))))))
+        (let [cmd (cons (first act) (cons state (rest act)))
+              new-state (eval cmd)]
+          (search new-state target (cons act path) (cons new-state state-hist)))))))
 
 ;; 搜索 6,5 -> 3 的问题:
 (let [init-state {:a {:c 6 :v 0}
@@ -94,9 +90,9 @@
   (search init-state target init-path init-state-hist))
 
 ;; 搜索 6,5 -> 2 的问题:
-(let [init-state {:a {:c 6 :v 0}
+(let [init-state {:a {:c 7 :v 0}
                   :b {:c 5 :v 0}}
-      target 2
+      target 3
       init-path ['init]
       init-state-hist [init-state]
       ]
